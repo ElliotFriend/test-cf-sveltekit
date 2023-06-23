@@ -2,6 +2,9 @@
 	import Counter from './Counter.svelte';
 	import welcome from '$lib/images/svelte-welcome.webp';
 	import welcome_fallback from '$lib/images/svelte-welcome.png';
+
+	import { Keypair } from 'stellar-sdk'
+	let kp = Keypair.random()
 </script>
 
 <svelte:head>
@@ -26,6 +29,8 @@
 	</h2>
 
 	<Counter />
+
+	<p>{kp.publicKey()}</p>
 </section>
 
 <style>
