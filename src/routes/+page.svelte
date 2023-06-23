@@ -3,8 +3,11 @@
 	import welcome from '$lib/images/svelte-welcome.webp';
 	import welcome_fallback from '$lib/images/svelte-welcome.png';
 
-	import { Keypair } from 'stellar-sdk'
+	import { Keypair, Server } from 'stellar-sdk'
 	let kp = Keypair.random()
+
+	let server = new Server('https://horizon.stellar.org')
+	let feeStats = server.feeStats()
 </script>
 
 <svelte:head>
@@ -31,6 +34,11 @@
 	<Counter />
 
 	<p>{kp.publicKey()}</p>
+	{#await feeStats}
+		<p>loading fee stats...</p>
+	{:then stats}
+		<pre><code>{JSON.stringify(stats, null, 4)}</code></pre>
+	{/await}
 </section>
 
 <style>
