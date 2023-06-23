@@ -3,7 +3,9 @@
 	import welcome from '$lib/images/svelte-welcome.webp';
 	import welcome_fallback from '$lib/images/svelte-welcome.png';
 
-	import { Keypair, Server } from 'stellar-sdk'
+	import { walletStore } from '$lib/stores/walletStore'
+
+	import { Keypair, Server, TransactionBuilder, Networks } from 'stellar-sdk'
 	let kp = Keypair.random()
 
 	let server = new Server('https://horizon.stellar.org')
@@ -12,6 +14,22 @@
 	let sep6info = fetch('https://testanchor.stellar.org/sep6/info')
 	.then(res => res.json())
 	.then(json => json)
+
+	let registerWallet = () => {
+		walletStore.register(kp.publicKey(), kp.secret(), '123456')
+	}
+
+	let transactionXDR = 'AAAAAgAAAACVr40MRtIbL6PPAdKyX1S0MJrXGQ8PB8onOgddGJx5MwAAAGQAAl/VAAAAAQAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAACwAAAAAAAAAAAAAAAAAAAAA='
+	let txEnvelop = TransactionBuilder.fromXDR(transactionXDR, Networks.TESTNET)
+
+	let signTransaction = () => {
+		let signedTx = walletStore.sign(txEnvelop, '123456')
+		.then((tx) => {
+			console.log(tx.toXDR())
+			return tx
+		})
+	}
+
 </script>
 
 <svelte:head>
@@ -37,7 +55,11 @@
 
 	<Counter />
 
-	<p>{kp.publicKey()}</p>
+	<p>Registered: {$walletStore.publicKey}</p>
+	<p>Random: {kp.publicKey()}</p>
+	<button class="btn btn-primary" on:click={registerWallet}>Register Wallet</button>
+
+	<button class="btn" on:click={signTransaction}>Sign Transaction</button>
 
 	{#await sep6info}
 		<p>loading sep6 info...</p>
