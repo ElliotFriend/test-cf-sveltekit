@@ -8,6 +8,10 @@
 
 	let server = new Server('https://horizon.stellar.org')
 	let feeStats = server.feeStats()
+
+	let sep6info = fetch('https://testanchor.stellar.org/sep6/info')
+	.then(res => res.json())
+	.then(json => json)
 </script>
 
 <svelte:head>
@@ -34,6 +38,13 @@
 	<Counter />
 
 	<p>{kp.publicKey()}</p>
+
+	{#await sep6info}
+		<p>loading sep6 info...</p>
+	{:then info}
+		<pre><code>{JSON.stringify(info, null, 4)}</code></pre>
+	{/await}
+
 	{#await feeStats}
 		<p>loading fee stats...</p>
 	{:then stats}
