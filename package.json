@@ -26,6 +26,7 @@
     "postcss-load-config": "^4.0.1",
     "stellar-sdk": "^10.4.1",
     "svelte": "^3.54.0",
+    "svelte-local-storage-store": "^0.5.0",
     "svelte-preprocess": "^5.0.3",
     "tailwindcss": "^3.3.1",
     "vite": "^4.3.0"
